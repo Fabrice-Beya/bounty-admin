@@ -1,25 +1,57 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ThemeProvider, CssBaseline, Box } from '@mui/material';
+import theme from './utils/theme';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import BountyManagement from './pages/BountyManagement';
+import TipManagement from './pages/TipManagement';
+import UserProfile from './pages/UserProfile';
+import { AuthProvider } from './contexts/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+import Toolbar from './components/Toolbar';
+import SideMenu from './components/SideMenu';
+import CreateBounty from './pages/CreateBounty';
+import EditBounty from './pages/EditBounty';
+import ViewBounty from './pages/ViewBounty';
+import CreateTip from './pages/CreateTip';
+import ViewTip from './pages/ViewTip';
+import EditTip from './pages/EditTip';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <AuthProvider>
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Toolbar />
+            <Box sx={{ display: 'flex', flexGrow: 1 }}>
+              <SideMenu />
+              <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route element={<PrivateRoute />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/bounties" element={<BountyManagement />} />
+                    <Route path="/bounties/create" element={<CreateBounty />} />
+                    <Route path="/bounties/edit/:id" element={<EditBounty />} />
+                    <Route path="/bounties/view/:id" element={<ViewBounty />} />
+                    <Route path="/tips" element={<TipManagement />} />
+        <Route path="/tips/create" element={<CreateTip />} />
+        <Route path="/tips/edit/:id" element={<EditTip />} />
+        <Route path="/tips/view/:id" element={<ViewTip />} />
+                    <Route path="/profile" element={<UserProfile />} />
+                  </Route>
+                </Routes>
+              </Box>
+            </Box>
+          </Box>
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   );
 }
 

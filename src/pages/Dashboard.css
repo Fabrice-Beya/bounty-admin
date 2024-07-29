@@ -1,0 +1,65 @@
+.dashboard {
+    padding: 20px;
+  }
+  
+  .summary-cards {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  
+  .summary-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 22%;
+  }
+  
+  .summary-card .icon {
+    font-size: 24px;
+    margin-right: 10px;
+  }
+  
+  .summary-card h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .summary-card p {
+    margin: 5px 0 0;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .recent-tips {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .recent-tips input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .recent-tips table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .recent-tips th, .recent-tips td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .recent-tips th {
+    background-color: #f8f8f8;
+    font-weight: bold;
+  }
