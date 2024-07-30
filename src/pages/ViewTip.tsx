@@ -182,7 +182,7 @@ const ViewTip: React.FC = () => {
                   </TableRow>
                   <TableRow>
                     <TableCell><strong>Reward</strong></TableCell>
-                    <TableCell>${tip.reward}</TableCell>
+                    <TableCell>R{tip.reward}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

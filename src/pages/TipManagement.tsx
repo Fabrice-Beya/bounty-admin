@@ -105,7 +105,7 @@ const TipManagement: React.FC = () => {
                 <TableCell>{tip.category}</TableCell>
                 <TableCell>{tip.status}</TableCell>
                 <TableCell>{tip.priority}</TableCell>
-                <TableCell>${tip.reward}</TableCell>
+                <TableCell>R{tip.reward}</TableCell>
                 <TableCell>{new Date(tip.datetime).toLocaleString()}</TableCell>
                 <TableCell>
                   <IconButton component={Link} to={`/tips/view/${tip.id}`}>

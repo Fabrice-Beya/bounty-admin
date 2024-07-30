@@ -33,7 +33,7 @@ const Dashboard: React.FC = () => {
         <div className="summary-cards">
           <SummaryCard title="Total Bounties" value={summary.totalBounties} icon="🏴‍☠️" />
           <SummaryCard title="Total Tips" value={summary.totalTips} icon="💡" />
-          <SummaryCard title="Total Budget" value={`$${summary.totalRevenue.toFixed(2)}`} icon="💰" />
+          <SummaryCard title="Total Budget" value={`R${summary.totalRevenue.toFixed(2)}`} icon="💰" />
         </div>
       )}
 

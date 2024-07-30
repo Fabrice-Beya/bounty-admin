@@ -117,7 +117,7 @@ const ViewBounty: React.FC = () => {
                   </TableRow>
                   <TableRow>
                     <TableCell component="th" scope="row">Reward Budget</TableCell>
-                    <TableCell>${bounty.reward}</TableCell>
+                    <TableCell>R{bounty.reward}</TableCell>
                   </TableRow>
                  
                   <TableRow>
