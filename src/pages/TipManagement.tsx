@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Typography, TextField, Box, Table, TableBody, TableCell, 
+  Typography, TextField, Box, Table, TableBody, TableCell,
   TableContainer, TableHead, TableRow, Paper, IconButton,
   Button, Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
@@ -28,7 +28,7 @@ const TipManagement: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const filtered = tips.filter(tip => 
+    const filtered = tips.filter(tip =>
       tip.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (statusFilter === 'All' || tip.status === statusFilter) &&
       (categoryFilter === 'All' || tip.category === categoryFilter)
@@ -37,10 +37,8 @@ const TipManagement: React.FC = () => {
   }, [searchTerm, statusFilter, categoryFilter, tips]);
 
   const handleDelete = async (id: string) => {
-    const success = await tipService.deleteTip(id);
-    if (success) {
-      setTips(tips.filter(tip => tip.id !== id));
-    }
+    await tipService.deleteTip(id);
+    setTips(tips.filter(tip => tip.id !== id));
   };
 
   return (
@@ -51,7 +49,7 @@ const TipManagement: React.FC = () => {
           Create Tip
         </Button>
       </Box>
-      
+
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
         <TextField
           label="Search Tips"
@@ -94,6 +92,8 @@ const TipManagement: React.FC = () => {
               <TableCell>Title</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Status</TableCell>
+              <TableCell>Priority</TableCell>
+              <TableCell>Reward</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -104,6 +104,8 @@ const TipManagement: React.FC = () => {
                 <TableCell>{tip.title}</TableCell>
                 <TableCell>{tip.category}</TableCell>
                 <TableCell>{tip.status}</TableCell>
+                <TableCell>{tip.priority}</TableCell>
+                <TableCell>${tip.reward}</TableCell>
                 <TableCell>{new Date(tip.datetime).toLocaleString()}</TableCell>
                 <TableCell>
                   <IconButton component={Link} to={`/tips/view/${tip.id}`}>

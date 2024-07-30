@@ -46,16 +46,16 @@ export interface AuthResponse {
 
 // New Bounty-related types
 export enum BountyStatus {
-  Open = 'open',
-  InProgress = 'in_progress',
-  Completed = 'completed',
-  Cancelled = 'cancelled'
+  OPEN = 'OPEN',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED'
 }
 
 export enum BountyPriority {
-  Low = 'low',
-  Medium = 'medium',
-  High = 'high'
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH'
 }
 
 export interface Bounty {
@@ -67,8 +67,17 @@ export interface Bounty {
   createdAt: string;
   expiresAt?: string;
   createdBy: string;
-  category: string;
+  category: BountyCategory;
   priority: BountyPriority;
+}
+
+export enum BountyCategory {
+  TELEGRAM = 'TELEGRAM',
+  WHATSAPP = 'WHATSAPP',
+  WEB = 'WEB',
+  CALL_CENTER = 'CALL_CENTER',
+  TEAMS = 'TEAMS',
+  GENERAL = 'GENERAL',
 }
 
 export interface CreateBountyRequest {
@@ -92,19 +101,26 @@ export interface UpdateBountyRequest {
 }
 
 export enum TipStatus {
-  New = 'New',
-  InProgress = 'In Progress',
-  Verified = 'Verified',
-  Closed = 'Closed',
-  Rejected = 'Rejected'
+  NEW = 'NEW',
+  IN_PROGRESS = 'IN_PROGRESS',
+  VERIFIED = 'VERIFIED',
+  CLOSED = 'CLOSED',
+  REJECTED = 'REJECTED',
+  PAID = 'PAID'
 }
 
 export enum TipCategory {
-  General = 'General',
-  Sighting = 'Sighting',
-  Intelligence = 'Intelligence',
-  Evidence = 'Evidence',
-  Other = 'Other'
+  GENERAL = 'GENERAL',
+  SIGHTING = 'SIGHTING',
+  INTELLIGENCE = 'INTELLIGENCE',
+  EVIDENCE = 'EVIDENCE',
+  OTHER = 'OTHER'
+}
+
+export enum TipPriority {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH'
 }
 
 export interface Tip {
@@ -115,6 +131,8 @@ export interface Tip {
   datetime: Date;
   location: string;
   status: TipStatus;
+  priority: TipPriority;
+  reward: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -125,6 +143,8 @@ export interface CreateTipRequest {
   category: TipCategory;
   datetime: Date;
   location: string;
+  priority: TipPriority;
+  reward: number;
 }
 
 export interface UpdateTipRequest {
@@ -135,14 +155,8 @@ export interface UpdateTipRequest {
   datetime?: Date;
   location?: string;
   status?: TipStatus;
-}
-
-export enum BountyCategory {
-  Smuggling = 'Smuggling',
-  Piracy = 'Piracy',
-  Theft = 'Theft',
-  Fraud = 'Fraud',
-  Other = 'Other'
+  priority?: TipPriority;
+  reward?: number;
 }
 
 export interface Summary {

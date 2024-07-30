@@ -10,12 +10,13 @@ const Logo: React.FC = () => {
         sx={{
           height: 40,
           width: 'auto',
+          borderRadius: '50%',
           maxHeight: { xs: 40, md: 50 },
           maxWidth: { xs: 40, md: 50 },
           mr: 2
         }}
         alt="Logo"
-        src="/logo.png"
+        src="/logo.svg"
       />
     </Link>
   );

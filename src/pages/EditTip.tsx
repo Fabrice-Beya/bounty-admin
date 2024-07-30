@@ -1,43 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import {
-  Box, Typography, TextField, Button, Select, MenuItem,
-  FormControl, InputLabel, Paper, Grid, CircularProgress
+  Box, Typography, Paper, Grid, Button, Select, MenuItem,
+  Table, TableBody, TableCell, TableContainer, TableRow,
+  CircularProgress, Chip, Dialog, DialogTitle, DialogContent,
+  DialogActions, TextField
 } from '@mui/material';
-import { UpdateTipRequest, TipCategory, TipStatus } from '../types';
+import { Tip, TipStatus, TipCategory, TipPriority } from '../types';
 import { tipService } from '../services/tipService';
 
-const schema = yup.object({
-  title: yup.string().required('Title is required'),
-  description: yup.string().required('Description is required'),
-  category: yup.string().oneOf(Object.values(TipCategory)).required('Category is required'),
-  datetime: yup.date().required('Date/Time is required'),
-  location: yup.string().required('Location is required'),
-  status: yup.string().oneOf(Object.values(TipStatus)).required('Status is required'),
-}).required();
-
-const EditTip: React.FC = () => {
+const ViewTip: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [tip, setTip] = useState<Tip | null>(null);
   const [loading, setLoading] = useState(true);
-  const { control, handleSubmit, formState: { errors }, reset } = useForm<UpdateTipRequest>({
-    resolver: yupResolver(schema),
-  });
+  const [priorityDialogOpen, setPriorityDialogOpen] = useState(false);
+  const [rewardDialogOpen, setRewardDialogOpen] = useState(false);
+  const [newPriority, setNewPriority] = useState<TipPriority | ''>('');
+  const [rewardAmount, setRewardAmount] = useState<number>(0);
 
   useEffect(() => {
     const fetchTip = async () => {
       if (!id) return;
       try {
-        const tip = await tipService.getTipById(id);
-        if (tip) {
-          reset({
-            ...tip,
-            datetime: new Date(tip.datetime),
-          });
-        }
+        const fetchedTip = await tipService.getTipById(id);
+        setTip(fetchedTip);
       } catch (error) {
         console.error('Failed to fetch tip:', error);
       } finally {
@@ -45,15 +32,35 @@ const EditTip: React.FC = () => {
       }
     };
     fetchTip();
-  }, [id, reset]);
+  }, [id]);
 
-  const onSubmit = async (data: UpdateTipRequest) => {
-    if (!id) return;
+  const handlePriorityChange = () => {
+    setPriorityDialogOpen(true);
+  };
+
+  const handlePriorityConfirm = async () => {
+    if (!tip || !newPriority) return;
     try {
-      await tipService.updateTip({ ...data, id });
-      navigate('/tips');
+      const updatedTip = await tipService.updateTip({ id: tip.id, priority: newPriority });
+      setTip(updatedTip);
+      setPriorityDialogOpen(false);
     } catch (error) {
-      console.error('Failed to update tip:', error);
+      console.error('Failed to update priority:', error);
+    }
+  };
+
+  const handleRewardAssignment = () => {
+    setRewardDialogOpen(true);
+  };
+
+  const handleRewardConfirm = async () => {
+    if (!tip) return;
+    try {
+      const updatedTip = await tipService.updateTip({ id: tip.id, reward: rewardAmount });
+      setTip(updatedTip);
+      setRewardDialogOpen(false);
+    } catch (error) {
+      console.error('Failed to update reward:', error);
     }
   };
 
@@ -61,127 +68,112 @@ const EditTip: React.FC = () => {
     return <CircularProgress />;
   }
 
+  if (!tip) {
+    return <Typography>Tip not found</Typography>;
+  }
+
   return (
-    <Box sx={{ maxWidth: 800, margin: 'auto', mt: 4 }}>
+    <Box sx={{ maxWidth: 1200, margin: 'auto', mt: 4 }}>
       <Paper sx={{ p: 4 }}>
-        <Typography variant="h4" gutterBottom>Edit Tip</Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Controller
-                name="title"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Title"
-                    fullWidth
-                    error={!!errors.title}
-                    helperText={errors.title?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name="description"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Description"
-                    fullWidth
-                    multiline
-                    rows={4}
-                    error={!!errors.description}
-                    helperText={errors.description?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth error={!!errors.category}>
-                <InputLabel>Category</InputLabel>
-                <Controller
-                  name="category"
-                  control={control}
-                  render={({ field }) => (
-                    <Select {...field} label="Category">
-                      {Object.values(TipCategory).map((category) => (
-                        <MenuItem key={category} value={category}>
-                          {category}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name="datetime"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Date/Time"
-                    type="datetime-local"
-                    fullWidth
-                    InputLabelProps={{ shrink: true }}
-                    error={!!errors.datetime}
-                    helperText={errors.datetime?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Controller
-                name="location"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Location"
-                    fullWidth
-                    error={!!errors.location}
-                    helperText={errors.location?.message}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth error={!!errors.status}>
-                <InputLabel>Status</InputLabel>
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <Select {...field} label="Status">
-                      {Object.values(TipStatus).map((status) => (
-                        <MenuItem key={status} value={status}>
-                          {status}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button onClick={() => navigate(-1)} variant="outlined">
-                  Cancel
-                </Button>
-                <Button type="submit" variant="contained" color="primary">
-                  Update Tip
-                </Button>
-              </Box>
-            </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12} display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h4">Tip ID - {tip.id}</Typography>
+            <Box>
+              <Button variant="contained" color="primary" onClick={() => navigate(`/tips/edit/${id}`)}>
+                Edit Tip
+              </Button>
+              <Button variant="outlined" color="primary" sx={{ ml: 2 }} onClick={handlePriorityChange}>
+                Change Priority
+              </Button>
+              <Button variant="outlined" color="primary" sx={{ ml: 2 }} onClick={handleRewardAssignment}>
+                Assign Reward
+              </Button>
+            </Box>
           </Grid>
-        </form>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">
+              Status: <Chip label={tip.status} color="primary" />
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant="subtitle1">
+              Priority: <Chip label={tip.priority} color="secondary" />
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <TableContainer>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell><strong>Title</strong></TableCell>
+                    <TableCell>{tip.title}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell><strong>Description</strong></TableCell>
+                    <TableCell>{tip.description}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell><strong>Category</strong></TableCell>
+                    <TableCell>{tip.category}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell><strong>Date/Time</strong></TableCell>
+                    <TableCell>{new Date(tip.datetime).toLocaleString()}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell><strong>Location</strong></TableCell>
+                    <TableCell>{tip.location}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell><strong>Reward</strong></TableCell>
+                    <TableCell>${tip.reward}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+        </Grid>
       </Paper>
+
+      <Dialog open={priorityDialogOpen} onClose={() => setPriorityDialogOpen(false)}>
+        <DialogTitle>Change Priority</DialogTitle>
+        <DialogContent>
+          <Select
+            value={newPriority}
+            onChange={(e) => setNewPriority(e.target.value as TipPriority)}
+            fullWidth
+          >
+            {Object.values(TipPriority).map((priority) => (
+              <MenuItem key={priority} value={priority}>
+                {priority}
+              </MenuItem>
+            ))}
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPriorityDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handlePriorityConfirm} color="primary">Confirm</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={rewardDialogOpen} onClose={() => setRewardDialogOpen(false)}>
+        <DialogTitle>Assign Reward</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Reward Amount"
+            type="number"
+            value={rewardAmount}
+            onChange={(e) => setRewardAmount(Number(e.target.value))}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setRewardDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleRewardConfirm} color="primary">Confirm</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
 
-export default EditTip;
+export default ViewTip;

@@ -7,7 +7,7 @@ import {
   Box, Typography, TextField, Button, Select, MenuItem,
   FormControl, InputLabel, Paper, Grid, CircularProgress
 } from '@mui/material';
-import { UpdateBountyRequest, BountyPriority, BountyStatus, Bounty } from '../types';
+import { UpdateBountyRequest, BountyPriority, BountyStatus, Bounty, BountyCategory } from '../types';
 import { bountyService } from '../services/bountyService';
 
 const schema = yup.object({
@@ -118,19 +118,22 @@ const EditBounty: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Controller
-                name="category"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Category"
-                    fullWidth
-                    error={!!errors.category}
-                    helperText={errors.category?.message}
-                  />
-                )}
-              />
+              <FormControl fullWidth error={!!errors.priority}>
+                <InputLabel>Category</InputLabel>
+                <Controller
+                  name="category"
+                  control={control}
+                  render={({ field }) => (
+                    <Select {...field} label="Priority">
+                      {Object.values(BountyCategory).map((category) => (
+                        <MenuItem key={category} value={category}>
+                          {category}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth error={!!errors.priority}>

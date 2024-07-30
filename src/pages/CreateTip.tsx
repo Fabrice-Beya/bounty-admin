@@ -7,7 +7,7 @@ import {
   Box, Typography, TextField, Button, Select, MenuItem,
   FormControl, InputLabel, Paper, Grid
 } from '@mui/material';
-import { CreateTipRequest, TipCategory } from '../types';
+import { CreateTipRequest, TipCategory, TipPriority } from '../types';
 import { tipService } from '../services/tipService';
 
 const schema = yup.object({
@@ -16,6 +16,8 @@ const schema = yup.object({
   category: yup.string().oneOf(Object.values(TipCategory)).required('Category is required'),
   datetime: yup.date().required('Date/Time is required'),
   location: yup.string().required('Location is required'),
+  priority: yup.string().oneOf(Object.values(TipPriority)).required('Priority is required'),
+  reward: yup.number().positive('Reward must be positive').required('Reward is required'),
 }).required();
 
 const CreateTip: React.FC = () => {
@@ -23,7 +25,7 @@ const CreateTip: React.FC = () => {
   const { control, handleSubmit, formState: { errors } } = useForm<CreateTipRequest>({
     resolver: yupResolver(schema),
     defaultValues: {
-      category: TipCategory.General,
+      category: TipCategory.GENERAL,
     },
   });
 
@@ -120,6 +122,40 @@ const CreateTip: React.FC = () => {
                     fullWidth
                     error={!!errors.location}
                     helperText={errors.location?.message}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth error={!!errors.priority}>
+                <InputLabel>Priority</InputLabel>
+                <Controller
+                  name="priority"
+                  control={control}
+                  render={({ field }) => (
+                    <Select {...field} label="Priority">
+                      {Object.values(TipPriority).map((priority) => (
+                        <MenuItem key={priority} value={priority}>
+                          {priority}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="reward"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Reward"
+                    type="number"
+                    fullWidth
+                    error={!!errors.reward}
+                    helperText={errors.reward?.message}
                   />
                 )}
               />

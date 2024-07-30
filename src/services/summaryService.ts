@@ -1,18 +1,11 @@
-import { TipCategory, BountyCategory, Summary } from '../types';
+import axios from 'axios';
+import { Summary } from '../types';
 
-class SummaryService {
-  async getSummary(): Promise<Summary> {
-    // Mock data - replace with actual API call later
-    return {
-      totalBounties: 14,
-      totalTips: 11,
-      mostCommonTipCategory: TipCategory.Sighting,
-      mostCommonBountyCategory: BountyCategory.Smuggling,
-      totalRevenue: 1818.80,
-      totalVendors: 11,
-      totalShops: 14,
-    };
-  }
-}
+const API_URL = process.env.REACT_APP_API_URL;
 
-export const summaryService = new SummaryService();
+export const summaryService = {
+  getSummary: async (): Promise<Summary> => {
+    const response = await axios.get(`${API_URL}/summary`);
+    return response.data;
+  },
+};

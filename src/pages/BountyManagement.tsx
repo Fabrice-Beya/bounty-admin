@@ -78,9 +78,9 @@ const BountyManagement: React.FC = () => {
             onChange={(e) => setPriorityFilter(e.target.value)}
           >
             <MenuItem value="">All</MenuItem>
-            <MenuItem value={BountyPriority.Low}>Low</MenuItem>
-            <MenuItem value={BountyPriority.Medium}>Medium</MenuItem>
-            <MenuItem value={BountyPriority.High}>High</MenuItem>
+            <MenuItem value={BountyPriority.LOW}>Low</MenuItem>
+            <MenuItem value={BountyPriority.MEDIUM}>Medium</MenuItem>
+            <MenuItem value={BountyPriority.HIGH}>High</MenuItem>
           </Select>
         </FormControl>
       </Box>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { ThemeProvider, CssBaseline, Box } from '@mui/material';
 import theme from './utils/theme';
 import Login from './pages/Login';
@@ -19,36 +19,47 @@ import CreateTip from './pages/CreateTip';
 import ViewTip from './pages/ViewTip';
 import EditTip from './pages/EditTip';
 
+
+function AppContent() {
+  const location = useLocation();
+  const isAuthPage = ['/login', '/register'].includes(location.pathname);
+
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Toolbar />
+      <Box sx={{ display: 'flex', flexGrow: 1 }}>
+        {!isAuthPage && <SideMenu />}
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/bounties" element={<BountyManagement />} />
+              <Route path="/bounties/create" element={<CreateBounty />} />
+              <Route path="/bounties/edit/:id" element={<EditBounty />} />
+              <Route path="/bounties/view/:id" element={<ViewBounty />} />
+              <Route path="/tips" element={<TipManagement />} />
+              <Route path="/tips/create" element={<CreateTip />} />
+              <Route path="/tips/edit/:id" element={<EditTip />} />
+              <Route path="/tips/view/:id" element={<ViewTip />} />
+              <Route path="/profile" element={<UserProfile />} />
+            </Route>
+          </Routes>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
         <AuthProvider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Toolbar />
-            <Box sx={{ display: 'flex', flexGrow: 1 }}>
-              <SideMenu />
-              <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route element={<PrivateRoute />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/bounties" element={<BountyManagement />} />
-                    <Route path="/bounties/create" element={<CreateBounty />} />
-                    <Route path="/bounties/edit/:id" element={<EditBounty />} />
-                    <Route path="/bounties/view/:id" element={<ViewBounty />} />
-                    <Route path="/tips" element={<TipManagement />} />
-        <Route path="/tips/create" element={<CreateTip />} />
-        <Route path="/tips/edit/:id" element={<EditTip />} />
-        <Route path="/tips/view/:id" element={<ViewTip />} />
-                    <Route path="/profile" element={<UserProfile />} />
-                  </Route>
-                </Routes>
-              </Box>
-            </Box>
-          </Box>
+          <AppContent />
         </AuthProvider>
       </Router>
     </ThemeProvider>

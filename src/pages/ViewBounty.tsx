@@ -6,7 +6,7 @@ import {
   CircularProgress, Chip, Dialog, DialogTitle, DialogContent,
   DialogActions, TextField
 } from '@mui/material';
-import { Bounty, BountyStatus, BountyPriority } from '../types';
+import { Bounty, BountyStatus, BountyPriority, BountyCategory } from '../types';
 import { bountyService } from '../services/bountyService';
 
 const ViewBounty: React.FC = () => {
@@ -52,6 +52,15 @@ const ViewBounty: React.FC = () => {
     }
   };
 
+  const handleCategoryChange = async (newCategory: BountyCategory) => {
+    try {
+      const updatedBounty = await bountyService.updateBounty({ id: id!, category: newCategory });
+      setBounty(updatedBounty);
+    } catch (error) {
+      console.error('Failed to update category:', error);
+    }
+  };
+
   const handleRewardAssignment = () => {
     setRewardDialogOpen(true);
   };
@@ -79,13 +88,13 @@ const ViewBounty: React.FC = () => {
       <Paper sx={{ p: 4 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h4">Bounty ID - {bounty.id}</Typography>
+            <Typography variant="h4">Bounty ID - {bounty.id.substring(0, 8).toUpperCase()}</Typography>
             <Box>
               <Button variant="contained" color="primary" onClick={() => navigate(`/bounties/edit/${id}`)}>
                 Edit Bounty
               </Button>
               <Button variant="outlined" color="primary" sx={{ ml: 2 }} onClick={handleRewardAssignment}>
-                Assign Reward
+                Update Reward Budget
               </Button>
             </Box>
           </Grid>
@@ -93,20 +102,6 @@ const ViewBounty: React.FC = () => {
             <Typography variant="subtitle1">
               Status: <Chip label={bounty.status} color="primary" />
             </Typography>
-          </Grid>
-          <Grid item xs={12} sm={6} display="flex" justifyContent="flex-end">
-            <Select
-              value={bounty.status}
-              onChange={(e) => handleStatusChange(e.target.value as BountyStatus)}
-              sx={{ width: 200 }}
-            >
-              {Object.values(BountyStatus).map((s) => (
-                <MenuItem key={s} value={s}>{s}</MenuItem>
-              ))}
-            </Select>
-            <Button variant="contained" color="primary" sx={{ ml: 2 }}>
-              Change Status
-            </Button>
           </Grid>
           <Grid item xs={12}>
             <TableContainer component={Paper} variant="outlined">
@@ -121,12 +116,35 @@ const ViewBounty: React.FC = () => {
                     <TableCell>{bounty.description}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell component="th" scope="row">Reward</TableCell>
+                    <TableCell component="th" scope="row">Reward Budget</TableCell>
                     <TableCell>${bounty.reward}</TableCell>
                   </TableRow>
+                 
                   <TableRow>
                     <TableCell component="th" scope="row">Category</TableCell>
-                    <TableCell>{bounty.category}</TableCell>
+                    <TableCell>
+                      <Select
+                        value={bounty.category}
+                        onChange={(e) => handleCategoryChange(e.target.value as BountyCategory)}
+                      >
+                        {Object.values(BountyCategory).map((c) => (
+                          <MenuItem key={c} value={c}>{c}</MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell component="th" scope="row">Status</TableCell>
+                    <TableCell>
+                      <Select
+                        value={bounty.status}
+                        onChange={(e) => handleStatusChange(e.target.value as BountyStatus)}
+                      >
+                        {Object.values(BountyStatus).map((s) => (
+                          <MenuItem key={s} value={s}>{s}</MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell component="th" scope="row">Priority</TableCell>
@@ -149,10 +167,10 @@ const ViewBounty: React.FC = () => {
                     <TableCell component="th" scope="row">Expires At</TableCell>
                     <TableCell>{bounty.expiresAt ? new Date(bounty.expiresAt).toLocaleString() : 'N/A'}</TableCell>
                   </TableRow>
-                  <TableRow>
+                  {/* <TableRow>
                     <TableCell component="th" scope="row">Created By</TableCell>
-                    <TableCell>{bounty.createdBy}</TableCell>
-                  </TableRow>
+                    <TableCell>{bounty.}</TableCell>
+                  </TableRow> */}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -161,7 +179,7 @@ const ViewBounty: React.FC = () => {
       </Paper>
 
       <Dialog open={rewardDialogOpen} onClose={() => setRewardDialogOpen(false)}>
-        <DialogTitle>Assign Reward</DialogTitle>
+        <DialogTitle>Update Reward Budget</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
