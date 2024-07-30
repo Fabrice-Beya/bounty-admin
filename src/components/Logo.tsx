@@ -8,12 +8,13 @@ const Logo: React.FC = () => {
       <Box
         component="img"
         sx={{
-          height: 40,
+          height: 30,
           width: 'auto',
           borderRadius: '50%',
-          maxHeight: { xs: 40, md: 50 },
-          maxWidth: { xs: 40, md: 50 },
-          mr: 2
+          maxHeight: { xs: 30, md: 40 },
+          maxWidth: { xs: 30, md: 40 },
+          mr: 2,
+          filter: 'brightness(0) invert(1)',
         }}
         alt="Logo"
         src="/logo.svg"

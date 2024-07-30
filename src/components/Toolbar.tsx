@@ -55,7 +55,7 @@ const Toolbar: React.FC = () => {
       <MuiToolbar>
         <Logo />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Multichoice Piracy Bounty Admin
+        Multichoice Bounty Admin
         </Typography>
         {user && (
           <div>

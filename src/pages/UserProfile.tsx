@@ -48,7 +48,7 @@ const UserProfile: React.FC = () => {
     <Paper elevation={3} sx={{ p: 3, maxWidth: 600, mx: 'auto', mt: 4 }}>
       <Typography variant="h4" gutterBottom>User Profile</Typography>
       
-      <Box sx={{ mt: 2 }}>
+      {/* <Box sx={{ mt: 2 }}>
         <Typography variant="h6">Email Notification</Typography>
         <TextField
           fullWidth
@@ -68,7 +68,7 @@ const UserProfile: React.FC = () => {
           />
           <Typography>Enable Notification</Typography>
         </Box>
-      </Box>
+      </Box> */}
 
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6">Information</Typography>
